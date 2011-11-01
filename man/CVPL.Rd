@@ -1,0 +1,37 @@
+\name{CVPL}
+\alias{CVPL}
+\title{Calculate cross-validated log-partial likelihood (with shrinkage)}
+\description{
+This function calculates the cross-validated log partial likelihood, with
+shrinkage if requested.}
+\usage{CVPL(formula, data, progress=TRUE, overall=FALSE, shrink=1)}
+\arguments{
+  \item{formula}{Formula for prediction model to be used as in
+  \code{\link[survival:coxph]{coxph}}}
+  \item{data}{Data set in which to interpret the formula}
+  \item{progress}{if \code{TRUE} (default), progress of the cross-validation will
+  be printed}
+  \item{overall}{if \code{TRUE}, \code{CVPL} uses regression coefficient estimates
+  based on the full data, for each observation i, rather than the estimates based
+  on data minus i}
+  \item{shrink}{Shrinkage factor; default is 1 (no shrinkage)}
+}
+\value{
+Numeric; the cross-validated log partial likelihood}
+\references{
+Verweij PJM & van Houwelingen  HC (1994), Penalized likelihood in Cox regression,
+Statistics in Medicine 13, 2427-2436.
+
+van Houwelingen HC, Putter H (2011). Dynamic Prediction in Clinical Survival Analysis.
+Chapman & Hall.
+}
+\author{Hein Putter \email{H.Putter@lumc.nl}}
+\examples{
+data(ova)
+CVPL(Surv(tyears, d) ~ 1, data = ova)
+CVPL(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam,
+  data = ova)
+CVPL(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam,
+  data = ova, overall=TRUE)
+}
+\keyword{univar}

@@ -1,0 +1,2 @@
+useDynLib(dynpred)
+export(AUC,AUCw,CVPL,CVcindex,cindex,cutLM,deb,evalstep,Fwindow,pe,pecox,pew,pewcox,scatterplot,toleranceplot)
