@@ -1,3 +1,28 @@
+#' Calculate dynamic AUC(t) curve
+#' 
+#' Calculate dynamic model-free curve of Area Under the Curve values over time,
+#' based on the dynamic/incident AUC of Heagerty and Zheng.
+#' 
+#' 
+#' @param formula Formula for prediction model to be used as in
+#' \code{\link[survival:coxph]{coxph}}
+#' @param data Data set in which to interpret the formula
+#' @param width Width of the window
+#' @return A data frame with columns \item{time}{The time points t at which
+#' AUCw(t) changes value (either t or t+width is an event time point)}
+#' \item{AUCw}{The AUCw(t) function} and with attribute \code{"width"} given as
+#' input.
+#' @author Hein Putter \email{H.Putter@@lumc.nl}
+#' @references van Houwelingen HC, Putter H (2012). Dynamic Prediction in
+#' Clinical Survival Analysis. Chapman & Hall.
+#' @keywords univar
+#' @examples
+#' 
+#' data(ova)
+#' AUCw(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam, data = ova,
+#'   width = 2)
+#' 
+#' @export AUCw
 AUCw <- function(formula,data,width)
 {
     cox1 <- coxph(formula, data)

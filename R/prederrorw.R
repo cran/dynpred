@@ -1,3 +1,63 @@
+#' Calculate dynamic prediction error curve
+#' 
+#' Calculate dynamic fixed width prediction error curve.
+#' 
+#' Corresponds to Equation (3.6) in van Houwelingen and Putter (2011). The
+#' \code{censformula} is used to calculate inverse probability of censoring
+#' weights (IPCW).
+#' 
+#' @aliases pew pewcox
+#' @param time Vector of time points in data
+#' @param status Vector of event indicators in data
+#' @param tsurv Vector of time points corresponding to the estimated survival
+#' probabilities in \code{survmat}
+#' @param survmat Matrix of estimated survival probabilities; dimension should
+#' be length of tsurv x length of time
+#' @param tcens Vector of time points corresponding to the estimated censoring
+#' probabilities in \code{censmat}
+#' @param censmat Matrix of estimated censoring probabilities; dimension should
+#' be length of tcens x length of time
+#' @param width Width of the window
+#' @param FUN The error function, either \code{"KL"} (default) for
+#' Kullback-Leibler or \code{"Brier"} for Brier score
+#' @param tout Vector of time points at which to evaluate prediction error. If
+#' missing, prediction error will be evaluated at all time points where the
+#' estimate will change value
+#' @param formula Formula for prediction model to be used as in
+#' \code{\link[survival:coxph]{coxph}}
+#' @param censformula Formula for censoring model, also to be used as in
+#' \code{\link[survival:coxph]{coxph}}
+#' @param data Data set in which to interpret \code{formula}
+#' @param censdata Data set in which to interpret \code{censformula}
+#' @param CV Boolean (default=\code{FALSE}); if \code{TRUE}, (leave-one-out)
+#' cross-validation is used for the survival probabilities
+#' @param progress Boolean (default=\code{FALSE}); if \code{TRUE}, progress is
+#' printed on screen
+#' @return A data frame with columns \item{time}{Event time points}
+#' \item{Err}{Prediction error of model specified by \code{formula} at these
+#' time points} and with attribute \code{"width"} given as input.
+#' @author Hein Putter \email{H.Putter@@lumc.nl}
+#' @references van Houwelingen HC, Putter H (2012). Dynamic Prediction in
+#' Clinical Survival Analysis. Chapman & Hall.
+#' @keywords univar
+#' @examples
+#' 
+#' data(ova)
+#' # Example on a subset, because the effect of CV is clearer
+#' ova2 <- ova[1:100,]
+#' pewcox(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam, Surv(tyears, 1-d) ~ 1,
+#'   width=2, data = ova2, FUN="Brier", tout=seq(0,6,by=0.5))
+#' pewcox(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam, Surv(tyears, 1-d) ~ 1,
+#'   width=2, data = ova2, FUN="Brier", tout=seq(0,6,by=0.5), CV=TRUE, progress=TRUE)
+#' 
+#' \donttest{
+#' pewcox(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam, Surv(tyears, 1-d) ~ 1,
+#'   width=2, data = ova, FUN="Brier", tout=seq(0,6,by=0.5))
+#' pewcox(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam, Surv(tyears, 1-d) ~ 1,
+#'   width=2, data = ova, FUN="Brier", tout=seq(0,6,by=0.5), CV=TRUE, progress=TRUE)
+#' }
+#' 
+#' @export pew
 pew <-
 function (time, status, tsurv, survmat, tcens, censmat, width,
     FUN = c("KL", "Brier"), tout)
@@ -42,6 +102,10 @@ function (time, status, tsurv, survmat, tcens, censmat, width,
     attr(res, "width") <- width
     return(res)
 }
+
+#' @rdname  pew
+#' @export
+#' @useDynLib dynpred
 
 pewcox <- function(formula, censformula, width, data, censdata,
     FUN = c("KL", "Brier"), tout, CV = FALSE, progress = FALSE)

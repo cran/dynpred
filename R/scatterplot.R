@@ -1,3 +1,38 @@
+#' Create scatter plot with imputed survival times
+#' 
+#' Create scatter plot with imputed survival times.
+#' 
+#' Imputation is used for censored survival times.
+#' 
+#' @param formula Formula for prediction model to be used as in
+#' \code{\link[survival:coxph]{coxph}}
+#' @param data Data set in which to interpret the formula
+#' @param horizon The horizon, maximum value to be imputed in case of censored
+#' observations; default is 1.05 times largest event time
+#' @param plot Should the tolerance plot actually be plotted? Default is
+#' \code{TRUE}
+#' @param xlab Label for x-axis
+#' @return A data frame with columns \item{x}{Predictor (centered at zero)}
+#' \item{imputed}{(Imputed) survival time} and with attribute \code{"horizon"}
+#' (copied from input or default).
+#' @author Hein Putter \email{H.Putter@@lumc.nl}
+#' @references Royston P (2001), The lognormal distribution as a model for
+#' survival time in cancer, with an emphasis on prognostic factors, Statistica
+#' Neerlandica 55, 89-104.
+#' 
+#' van Houwelingen HC, Putter H (2012). Dynamic Prediction in Clinical Survival
+#' Analysis. Chapman & Hall.
+#' @keywords univar
+#' @examples
+#' 
+#' data(ova)
+#' scatterplot(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam, data = ova)
+#' 
+#' @importFrom stats runif lsfit lm 
+#' @importFrom graphics points text
+#' 
+#' 
+#' @export scatterplot
 scatterplot <- function(formula,data,horizon,plot=TRUE,xlab)
 {
     cox1 <- coxph(formula, data)

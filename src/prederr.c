@@ -20,6 +20,8 @@
 **  Work
 **    work[n] - working vectors/matrices
 */
+
+
 #include <math.h>
 #include <R.h>
 
@@ -61,8 +63,8 @@ void prederr(
 */
       errt0 = 0.0;
       /* find indices for censoring and survival at t0 */
-      idxsurvt0=0; j=1; while ((j<nsurv) & (tsurv[j]<=t0)) {j++; idxsurvt0++;}
-      idxcenst0=0; j=1; while ((j<ncens) & (tcens[j]<=t0)) {j++; idxcenst0++;}
+      idxsurvt0=0; j=1; while ((j<nsurv) && (tsurv[j]<=t0)) {j++; idxsurvt0++;}
+      idxcenst0=0; j=1; while ((j<ncens) && (tcens[j]<=t0)) {j++; idxcenst0++;}
 /*
       Rprintf("\tidxsurvt0=%d, idxcenst0=%d\n",idxsurvt0,idxcenst0);
    	  R_FlushConsole();
@@ -73,10 +75,10 @@ void prederr(
         Rprintf("\ti=%d, time[i]=%6.4f, status[i]=%d, survt0=%6.4f\n",i,time[i],status[i],survt0);
       	R_FlushConsole();
 */
-        if ((time[i]<=t0) & (status[i]==1)) { /* a case */
+        if ((time[i]<=t0) && (status[i]==1)) { /* a case */
           y = 0;
           censt0 = 1.0; /* censoring needed at time[i]-, called here censt0 nonetheless */
-          j=1; while ((j<ncens) & (tcens[j]<=time[i])) {censt0 = censmat[i*ncens+(j-1)]; j++;}
+          j=1; while ((j<ncens) && (tcens[j]<=time[i])) {censt0 = censmat[i*ncens+(j-1)]; j++;}
           if (FUN==1) score = (y-survt0)*(y-survt0);
           else score = -(y*log(survt0)+(1-y)*log(1-survt0));
           derrt0 = score/censt0;

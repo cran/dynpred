@@ -1,3 +1,39 @@
+#' Calculate cross-validated log-partial likelihood (with shrinkage)
+#' 
+#' This function calculates the cross-validated log partial likelihood, with
+#' shrinkage if requested.
+#' 
+#' 
+#' @param formula Formula for prediction model to be used as in
+#' \code{\link[survival:coxph]{coxph}}
+#' @param data Data set in which to interpret the formula
+#' @param progress if \code{TRUE} (default), progress of the cross-validation
+#' will be printed
+#' @param overall if \code{TRUE}, \code{CVPL} uses regression coefficient
+#' estimates based on the full data, for each observation i, rather than the
+#' estimates based on data minus i
+#' @param shrink Shrinkage factor; default is 1 (no shrinkage)
+#' @return Numeric; the cross-validated log partial likelihood
+#' @author Hein Putter \email{H.Putter@@lumc.nl}
+#' @references Verweij PJM & van Houwelingen HC (1994), Penalized likelihood in
+#' Cox regression, Statistics in Medicine 13, 2427-2436.
+#' 
+#' van Houwelingen HC, Putter H (2012). Dynamic Prediction in Clinical Survival
+#' Analysis. Chapman & Hall.
+#' @keywords univar
+#' @examples
+#' 
+#' data(ova)
+#' CVPL(Surv(tyears, d) ~ 1, data = ova)
+#' CVPL(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam,
+#'   data = ova)
+#' CVPL(Surv(tyears, d) ~ Karn + Broders + FIGO + Ascites + Diam,
+#'   data = ova, overall=TRUE)
+#' 
+#' @importFrom stats model.matrix
+#' @importFrom utils flush.console
+#' 
+#' @export CVPL
 CVPL <- function(formula, data, progress=TRUE, overall=FALSE, shrink=1)
 {
     # Extract data (time and status)

@@ -59,17 +59,17 @@ void prederrw(
       t = tout[iout]; tw = t+*w;
       /* Find out how many at risk */
       nrisk = n;
-      while ((time[nrisk-1]>t) & (nrisk>0)) nrisk--;
+      while ((time[nrisk-1]>t) && (nrisk>0)) nrisk--;
       nrisk = n - nrisk;
 /*
   	  Rprintf("\niout=%d: t=%6.4f, tw=%6.4f, n=%d, nrisk=%d\n",iout,t,tw,n,nrisk);
       R_FlushConsole();
 */
       /* find indices for censoring and survival at t and tw */
-      idxsurvt=0; j=1; while ((j<nsurv) & (tsurv[j]<=t)) {j++; idxsurvt++;}
-      idxcenst=0; j=1; while ((j<ncens) & (tcens[j]<=t)) {j++; idxcenst++;}
-      idxsurvtw=0; j=1; while ((j<nsurv) & (tsurv[j]<=tw)) {j++; idxsurvtw++;}
-      idxcenstw=0; j=1; while ((j<ncens) & (tcens[j]<=tw)) {j++; idxcenstw++;}
+      idxsurvt=0; j=1; while ((j<nsurv) && (tsurv[j]<=t)) {j++; idxsurvt++;}
+      idxcenst=0; j=1; while ((j<ncens) && (tcens[j]<=t)) {j++; idxcenst++;}
+      idxsurvtw=0; j=1; while ((j<nsurv) && (tsurv[j]<=tw)) {j++; idxsurvtw++;}
+      idxcenstw=0; j=1; while ((j<ncens) && (tcens[j]<=tw)) {j++; idxcenstw++;}
 /*
       Rprintf("\tidxsurvt=%d, idxcenst=%d, idxsurvtw=%d, idxcenstw=%d\n",idxsurvt,idxcenst,idxsurvtw,idxcenstw);
    	  R_FlushConsole();
@@ -86,10 +86,10 @@ void prederrw(
 				idx,time[idx],status[idx],survmat[idx*nsurv+idxsurvtw],survmat[idx*nsurv+idxsurvt],survtw);
 			R_FlushConsole();
 */
-			if ((time[idx]<=tw) & (status[idx]==1)) { /* a case */
+			if ((time[idx]<=tw) && (status[idx]==1)) { /* a case */
 			  y = 0;
 			  censtw = 1.0; /* censoring needed at ti-, called here censtw nonetheless */
-			  j=1; while ((j<ncens) & (tcens[j]<=time[idx])) {censtw = censmat[idx*ncens+(j-1)]; j++;}
+			  j=1; while ((j<ncens) && (tcens[j]<=time[idx])) {censtw = censmat[idx*ncens+(j-1)]; j++;}
 			  censtw = censtw/censmat[idx*ncens+idxcenst];
 			  if (FUN==1) score = (y-survtw)*(y-survtw);
 			  else score = -(y*log(survtw)+(1-y)*log(1-survtw));
